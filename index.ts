@@ -1,4 +1,4 @@
-import { handler } from "./handlers";
+import { handler } from "./utils";
 
 Bun.serve({
   fetch: handler,
