@@ -8,6 +8,10 @@ export class Page {
     this.file = file;
   }
 
+  get fileName() {
+    return this.file.name?.split(".")[0];
+  }
+
   metadata = (filename: string = "index") => {
     if (!filename) throw new Error("Missing filename");
 
@@ -16,12 +20,13 @@ export class Page {
       { title: string; description: string }
     > = {
       index: {
-        title: "test",
-        description: "hello hi a test",
+        title: "rich james",
+        description: "a website",
       },
     };
 
-    const { title, description } = pagesMetadata[filename];
+    const { title = "title", description = "description" } =
+      pagesMetadata[filename];
 
     if (!title || !description) {
       throw new Error(`Missing metadata for ${filename}`);
@@ -33,18 +38,16 @@ export class Page {
     };
   };
 
-  header = (headerTemplate: string, title: string, description: string) => {};
+  header = (headerTemplate: string, title: string) => {
+    return headerTemplate.replace("{{ title }}", title);
+  };
 
   async render(body: BunFile) {
     const template = await this.template.text();
-    const { title, description } = this.metadata(this.file.name);
+    const { title } = this.metadata(this.fileName);
     const headerTemplate = template.split("±")[0];
     const footer = template.split("±")[1];
 
-    return (
-      this.header(headerTemplate, title, description) +
-      (await body.text()) +
-      footer
-    );
+    return this.header(headerTemplate, title) + (await body.text()) + footer;
   }
 }
