@@ -4,7 +4,9 @@ export class Page {
   file: BunFile;
   template = Bun.file("layout.html");
 
-  constructor(file: BunFile) {
+  constructor(fileName: string) {
+    const file = Bun.file(fileName);
+
     this.file = file;
   }
 
@@ -50,12 +52,14 @@ export class Page {
     return headerTemplate.replace("{{ title }}", title);
   };
 
-  async render(body: BunFile) {
+  async render() {
     const template = await this.template.text();
     const { title } = this.metadata(this.fileName);
     const headerTemplate = template.split("±")[0];
     const footer = template.split("±")[1];
 
-    return this.header(headerTemplate, title) + (await body.text()) + footer;
+    return (
+      this.header(headerTemplate, title) + (await this.file.text()) + footer
+    );
   }
 }

@@ -1,5 +1,5 @@
 import { it, expect, describe, mock } from "bun:test";
-import { handler, router, view } from "./utils";
+import { handler, qualifiedUrl, view } from "./utils";
 
 const url = "http://url.com";
 
@@ -25,11 +25,11 @@ describe("handler", () => {
 
 describe("router", () => {
   it("defaults to index.html if not path is passed", async () => {
-    expect(router(undefined as unknown as string)).toEqual("index.html");
+    expect(qualifiedUrl(undefined as unknown as string)).toEqual("index.html");
   });
 
   it("returns page-2.html if page-2 is passed", async () => {
-    expect(router(new Request({ url: url + "/page-2" }).url)).toEqual(
+    expect(qualifiedUrl(new Request({ url: url + "/page-2" }).url)).toEqual(
       "page-2.html"
     );
   });
