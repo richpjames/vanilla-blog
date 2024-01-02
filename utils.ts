@@ -1,15 +1,17 @@
 import { Page } from "./page";
 
-export const handler = async (req: Request) => {
-  const path = new URL(req.url).pathname.split("/")[1];
+const path = (req: Request) => new URL(req.url).pathname.split("/")[1];
 
+export const handler = async (req: Request) => {
+  const pathFromReq = path(req);
   switch (true) {
-    case path.search(".css") > 0:
+    case pathFromReq.search(".css") > 0:
       return new Response(Bun.file("style.css"), {
         headers: { "Content-Type": "text/css" },
       });
-    case !Boolean(path.search("/") > 0) && Boolean(path.search(".")):
-      return new Response(await view(req.url), {
+    case !Boolean(pathFromReq.search("/") > 0) &&
+      !Boolean(pathFromReq.search(".")):
+      return new Response(await view(path(req)), {
         headers: { "Content-Type": "text/html" },
       });
     default:
@@ -19,7 +21,9 @@ export const handler = async (req: Request) => {
   }
 };
 
-export const view = async (url: Request["url"] = "index"): Promise<string> => {
+export const view = async (
+  url: Request["url"] = "index.html"
+): Promise<string> => {
   const route = router(url);
   const file = Bun.file(route);
 
@@ -28,16 +32,22 @@ export const view = async (url: Request["url"] = "index"): Promise<string> => {
 };
 
 export const router = (url: Request["url"]): string => {
-  switch (true) {
-    case new RegExp(".").test(route(url)):
+  const multipleSuffixes = route(url);
+
+  switch (!multipleSuffixes) {
+    case new RegExp("page-2").test(url):
+      return "page-2.html";
+    case new RegExp(".").test(url):
       return "index.html";
     default:
       return "index.html";
   }
 };
 
-export const route = (url: Request["url"]): string => {
+export const route = (url: Request["url"]): boolean => {
+  // does the url have a file extension?
   const pathSegments = url.split(".").slice(-1)[0].split("/").slice(1);
 
-  return pathSegments[0] ? pathSegments.join("/") : "index";
+  // if there are multiple segments join them, otherwise return index
+  return Boolean(pathSegments.length);
 };

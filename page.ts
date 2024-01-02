@@ -17,9 +17,17 @@ export class Page {
 
     const pagesMetadata: Record<
       string,
-      { title: string; description: string }
+      { title: string; description: string; date?: string; published?: boolean }
     > = {
       index: {
+        title:
+          "Monitor Books #3: static site generation with Gatsby, Strapi and a new look",
+        description:
+          "How I rebuilt the site from the ground up using Gatsby, Strapi as the CMS and implementing a whole new look",
+        date: "2022-01-02",
+        published: true,
+      },
+      "page-2": {
         title: "rich james",
         description: "a website",
       },
