@@ -1,10 +1,11 @@
 import { BunFile } from "bun";
+import { PagePath } from "../types";
 
 export class Page {
   file: BunFile;
   template = Bun.file("layout.html");
 
-  constructor(fileName: string) {
+  constructor(fileName: PagePath) {
     const file = Bun.file(fileName);
 
     this.file = file;

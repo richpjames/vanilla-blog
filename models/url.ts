@@ -1,3 +1,5 @@
+import { PagePath } from "../types";
+
 export class Url extends URL {
   constructor(url: string) {
     super(url);
@@ -8,7 +10,7 @@ export class Url extends URL {
     return result;
   }
 
-  get qualifiedFilePath() {
+  get qualifiedFilePath(): PagePath {
     if (new RegExp("page-2").test(this.filePath)) return "page-2.html";
 
     return "index.html";
